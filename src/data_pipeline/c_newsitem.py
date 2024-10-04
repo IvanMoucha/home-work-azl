@@ -1,3 +1,7 @@
+from json import JSONEncoder
+from datetime import datetime
+
+
 class NewsItem:
     def __init__(self, title, description, link, category, pub_date, guid, media_thumbnail_url):
         self.title = title
@@ -12,3 +16,10 @@ class NewsItem:
     def __repr__(self):
         return f"NewsItem(title={self.title}, pub_date={self.pub_date})"
 
+    def json(self):
+        def default(obj):
+            if isinstance(obj, datetime):
+                return obj.isoformat()
+            raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
+
+        return JSONEncoder(default=default).encode(self.__dict__)
