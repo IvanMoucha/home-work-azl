@@ -35,7 +35,7 @@ def parse_item(item):
         title=item.find('title').text,
         description=item.find('description').text,
         link=item.find('link').text,
-        category=item.find('category').text,
+        category=item.find('category').text.strip() if item.find('category') is not None else None,
         pub_date=parser.parse(item.find('pubDate').text),
         guid=item.find('guid').text,
         media_thumbnail_url=media_thumbnail_elem.attrib['url'] if media_thumbnail_elem is not None else None
