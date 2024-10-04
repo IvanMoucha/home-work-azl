@@ -18,6 +18,18 @@ postgresql:
     password: mypassword  # Replace with a secure password
     database: poc
 
+cronjob:
+  enabled: true
+  schedule: "0 * * * *"  # Every hour
+  image:
+    repository: poc
+    tag: latest
+    pullPolicy: Never #to support local image, for PROD -> IfNotPresent
+  name: processor-cronjob
+  env:
+    - name: DB_HOST
+      value: "poc-postgresql"
+
 ##############
 # Service definition
 ##############
