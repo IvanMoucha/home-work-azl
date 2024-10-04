@@ -1,0 +1,42 @@
+import requests
+import xml.etree.ElementTree as ET
+from dateutil import parser
+import src.utils.logger as logger
+from src.data_pipeline.c_newsitem import NewsItem
+
+
+log = logger.get_logger(__name__)
+
+def fetch_rss_feed(url):
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+        }
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        log.info("Successfully fetched RSS feed.")
+        return response.content
+    except requests.exceptions.RequestException as e:
+        log.error(f"Error fetching RSS feed: {e}")
+        raise
+
+def parse_rss_feed(xml_content):
+    root = ET.fromstring(xml_content)
+    items = []
+    for item in root.findall('./channel/item'):
+        news_item = parse_item(item)
+        items.append(news_item)
+    return items
+
+def parse_item(item):
+    media_thumbnail_elem = item.find('media:thumbnail', {'media': 'http://search.yahoo.com/mrss/'})
+
+    return NewsItem(
+        title=item.find('title').text,
+        description=item.find('description').text,
+        link=item.find('link').text,
+        category=item.find('category').text,
+        pub_date=parser.parse(item.find('pubDate').text),
+        guid=item.find('guid').text,
+        media_thumbnail_url=media_thumbnail_elem.attrib['url'] if media_thumbnail_elem is not None else None
+    )
