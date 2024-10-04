@@ -3,16 +3,13 @@ import xml.etree.ElementTree as ET
 from dateutil import parser
 import src.utils.logger as logger
 from src.data_pipeline.c_newsitem import NewsItem
-
+from src.utils import config
 
 log = logger.get_logger(__name__)
 
 def fetch_rss_feed(url):
     try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
-        }
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=config.HEADERS)
         response.raise_for_status()
         log.info("Successfully fetched RSS feed.")
         return response.content
