@@ -1,16 +1,16 @@
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
-from src.data_pipeline.c_newsitem import NewsItem
-from src.database.m_news import News
-from src.database.db import engine
 import src.utils.logger as logger
-
+from src.data_pipeline.c_newsitem import NewsItem
+from src.database.db import engine
+from src.database.m_news import News
 
 log = logger.get_logger(__name__)
 
 # Create a session factory
 Session = sessionmaker(bind=engine)
+
 
 def guid_exists(guid):
     """
@@ -28,6 +28,7 @@ def guid_exists(guid):
         return exists
     finally:
         session.close()
+
 
 def insert_news_item(news_item: NewsItem):
     """
@@ -48,6 +49,7 @@ def insert_news_item(news_item: NewsItem):
                 media_thumbnail_url=news_item.media_thumbnail_url,
                 tldr=news_item.tldr)
     insert_news(news)
+
 
 def insert_news(news: News):
     """
@@ -71,6 +73,7 @@ def insert_news(news: News):
     finally:
         session.close()
 
+
 def update_news_item(news_item: NewsItem):
     """
     Convert NewsItem to News and update it in the database.
@@ -90,6 +93,7 @@ def update_news_item(news_item: NewsItem):
                 media_thumbnail_url=news_item.media_thumbnail_url,
                 tldr=news_item.tldr)
     update_news(news)
+
 
 def update_news(news_item: News):
     """
@@ -120,6 +124,69 @@ def update_news(news_item: News):
     except SQLAlchemyError as e:
         session.rollback()
         log.error("Error updating news item with GUID %s: %s", news_item.guid, e)
+        raise e
+    finally:
+        session.close()
+
+def get_news_by_guid(guid):
+    """
+    Retrieve a news item from the database based on the provided GUID.
+
+    Args:
+        guid (str): The GUID of the news item to retrieve.
+
+    Returns:
+        News: The News object if found, None otherwise.
+    """
+    session = Session()
+    try:
+        news_item = session.query(News).filter(News.guid == guid).first()
+        return news_item
+    except SQLAlchemyError as e:
+        log.error("Error retrieving news item with GUID %s: %s", guid, e)
+        raise e
+    finally:
+        session.close()
+
+def get_all_news():
+    """
+    Retrieve all news items from the database.
+
+    Returns:
+        List[News]: A list of all News objects in the database.
+    """
+    session = Session()
+    try:
+        news_items = session.query(News).all()
+        return news_items
+    except SQLAlchemyError as e:
+        log.error("Error retrieving all news items: %s", e)
+        raise e
+    finally:
+        session.close()
+
+def search_news(query):
+    """
+    Search for news items in the database based on the provided query.
+
+    Args:
+        query (str): The search query.
+
+    Returns:
+        List[News]: A list of News objects that match the search query.
+    """
+    session = Session()
+    try:
+        search_query = f"%{query}%"
+        news_items = session.query(News).filter(
+            (News.title.ilike(search_query)) |
+            (News.description.ilike(search_query)) |
+            (News.category.ilike(search_query)) |
+            (News.tldr.ilike(search_query))
+        ).all()
+        return news_items
+    except SQLAlchemyError as e:
+        log.error("Error searching news items with query %s: %s", query, e)
         raise e
     finally:
         session.close()

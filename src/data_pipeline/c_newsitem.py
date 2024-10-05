@@ -1,8 +1,18 @@
 from json import JSONEncoder
 from datetime import datetime
+from pydantic import BaseModel
 
 
-class NewsItem:
+class NewsItem(BaseModel):
+    title: str
+    description: str
+    link: str
+    category: str
+    pub_date: datetime
+    guid: str
+    media_thumbnail_url: str
+    tldr: str|None = None
+
     def __init__(self, title, description, link, category, pub_date, guid, media_thumbnail_url):
         self.title = title
         self.description = description

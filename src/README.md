@@ -14,6 +14,12 @@
 ## Run Processor (scheduled one)
 * `uv run processor.py`
 
+## Run API
+* `./.venv/bin/uvicorn api:app --reload --port 5000 --access-log --use-colors`
+* OpenAPI documentation is available at `http://localhost:5000/docs`
+* Swagger UI is available at `http://localhost:5000/redoc`
+
+
 ## Usage of LLM model
 * set environmental variable to `LLM=1`, default is `LLM=0`
   * `Dockerfile` line 4 (for deployment)
