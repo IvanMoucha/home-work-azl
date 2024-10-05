@@ -19,7 +19,7 @@ class LoggingSingleton(object):
         if logging.getLogger().hasHandlers():
             for handler in logging.getLogger().handlers:
                 handler.setFormatter(
-                    logging.Formatter('[%(levelname)s]\t%(asctime)s.%(msecs)dZ\t[%(name)s:%(lineno)s]\t%(message)s\n', '%Y-%m-%dT%H:%M:%S'))
+                    logging.Formatter('[%(levelname)s]\t%(asctime)s.%(msecs)dZ\t[%(name)s:%(lineno)s]\t%(message)s', '%Y-%m-%dT%H:%M:%S'))
 
 logger = LoggingSingleton()
 
