@@ -20,7 +20,7 @@ class News(Base):
     pub_date = Column(DateTime, index=True)
     guid = Column(String(32), unique=True, index=True)
     media_thumbnail_url = Column(String(128))
-    tldr = Column(Text, index=True)
+    tldr = Column(Text)
 
 
 def init():

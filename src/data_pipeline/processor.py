@@ -19,14 +19,16 @@ def process_news_item(news_item: NewsItem):
             if handle_corrupt_data(news_item) is not None:
                 process = True
 
-        news_item = enrich(news_item)
-
         if process and dao_news.guid_exists(news_item.guid):
-            dao_news.update_news_item(news_item)
-            log.debug(f"Updated news item: {news_item.guid}")
+            # dao_news.update_news_item(news_item)
+            # log.debug(f"Updated news item: {news_item.guid}")
+            log.info(f"News item already exists, skipping: {news_item.guid}")
         elif process:
+            news_item = enrich(news_item)
+
             dao_news.insert_news_item(news_item)
             store(news_item)
+
             log.debug(f"Inserted news item: {news_item.guid}")
     except Exception as e:
         handle_errors(news_item, e)

@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 import src.utils.logger as logger
+import src.data_pipeline.ai as ai
 from src.data_pipeline.c_newsitem import NewsItem
 from src.utils import config
 
@@ -32,6 +33,9 @@ def enrich(news_item: NewsItem) -> NewsItem:
         log.warning(f"Failed to extract the article content: {news_item.link}")
         content = None
 
-    news_item.tldr = content
+    if config.LLM:
+        news_item.tldr = ai.AI().generate_tldr(content)
+    else:
+        news_item.tldr = content
 
     return news_item

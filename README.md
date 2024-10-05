@@ -14,7 +14,9 @@
 * Scalability
   * Utilize scalable services and distributed processing frameworks between Ingestion and Processing to handle changes in datasets (e.g., Apache Kafka, Spark).
   * Make Processing module scalable (parallelization).
+  * Externalize LLM model to a separate service (preferable with dedicated GPU) or use external API like OpenAI.
 * Reliability 
+  * Improve quality of codebase (proper error handling, readability, etc.)
   * Implement retry mechanisms in the Data Ingestion Module.
   * Use monitoring tools to track system health and performance (APM).
   * Integrate logging at each stage for debugging and auditing purposes.
