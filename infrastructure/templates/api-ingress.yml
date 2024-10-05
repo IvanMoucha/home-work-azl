@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api
+  annotations:
+    {{- range $key, $value := .Values.api.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  ingressClassName: kong
+  rules:
+    {{- range .Values.api.ingress.hosts }}
+    - http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: api
+                port:
+                  number: 5000
+          {{- end }}
+    {{- end }}

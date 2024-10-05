@@ -1,0 +1,18 @@
+FROM python:3.12-bookworm
+LABEL authors="Ivan Moucha"
+
+ENV LLM=0
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="/" sh
+
+COPY api.py /
+COPY pyproject.toml /
+COPY src/ src/
+
+RUN uv venv --python 3.12 \
+    && uv sync \
+    && . /.venv/bin/activate
+
+EXPOSE 5000
+
+ENTRYPOINT ["/.venv/bin/uvicorn", "api:app", "--host", "0.0.0.0", "--port", "5000", "--access-log"]

@@ -12,3 +12,6 @@ dependencies:
   - name: postgresql
     version: "16"
     repository: "https://charts.bitnami.com/bitnami"
+  - name: kong
+    version: "2.42.0"
+    repository: "https://charts.konghq.com"
