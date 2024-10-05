@@ -54,6 +54,7 @@ api:
     enabled: true
     annotations:
       konghq.com/strip-path: "false"
+      konghq.com/plugins: "rate-limit,key-auth"
     hosts:
       - paths:
           - path: /health

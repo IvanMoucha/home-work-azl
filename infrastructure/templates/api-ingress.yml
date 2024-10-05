@@ -1,3 +1,42 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: rate-limit
+  annotations:
+    kubernetes.io/ingress.class: kong
+config:
+  minute: 5
+  policy: local
+plugin: rate-limiting
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: key-auth
+plugin: key-auth
+config:
+  key_names:
+    - apikey
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azul-key-auth
+  labels:
+    konghq.com/credential: key-auth
+stringData:
+  key: "azul-api-key"
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongConsumer
+metadata:
+  name: azul
+  annotations:
+    kubernetes.io/ingress.class: kong
+username: azul
+credentials:
+  - azul-key-auth
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

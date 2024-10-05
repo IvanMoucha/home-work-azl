@@ -19,6 +19,14 @@
 * OpenAPI documentation is available at `http://localhost:5000/docs`
 * Swagger UI is available at `http://localhost:5000/redoc`
 
+## Run API on K8s
+* default API Key is: `azul-api-key`
+
+## Testing API
+### K8s
+* `curl --request GET --url http://127.0.0.1:8080/health --header 'apikey: azul-api-key'`
+### Development
+* `curl --request GET --url http://127.0.0.1:5000/health`
 
 ## Usage of LLM model
 * set environmental variable to `LLM=1`, default is `LLM=0`
