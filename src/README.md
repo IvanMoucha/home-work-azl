@@ -2,6 +2,8 @@
 
 ## Dependency
 * Python 3.12
+* PostgreSQL 16
+  * by default the connection is using localhost:5432, to set different host, set env `DB_HOST`
 * `uv` package manager
 
 ## Development Environment Setup
